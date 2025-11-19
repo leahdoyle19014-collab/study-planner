@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Planner</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Basic styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top-bar">
+    <div>
+      <div id="app-title" class="app-title">Planner</div> 
+      <div id="today-label" class="today-label"></div>
+    </div>
+    <div class="controls">
+      <button id="btn-new-task" class="btn primary">+ New Task</button>
+      <button id="btn-new-assignment" class="btn">+ New Assignment</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="pane">
+      <h2>Today</h2>
+
+      <h3>Tasks</h3>
+      <div id="today-tasks" class="list"></div>
+
+      <h3>Reminders</h3>
+      <div id="today-reminders" class="list"></div>
+    </section>
+
+    <section class="pane">
+      <h2>Calendar</h2>
+      <div class="month-picker-row">
+        <label for="month-picker">Jump to month:</label>
+        <input type="month" id="month-picker" />
+      </div>
+      <div id="calendar-grid" class="calendar-grid"></div>
+
+      <h3>Selected day</h3>
+      <div id="selected-day-details" class="selected-day"></div>
+    </section>
+  </main>
+
+  <!-- Backdrop for modals -->
+  <div id="modal-backdrop" class="backdrop hidden"></div>
+
+  <!-- New Task Modal -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>New Task</h2>
+      <form id="task-form">
+        <label>
+          Title
+          <input type="text" id="task-title" required />
+        </label>
+        <label>
+          Date
+          <input type="date" id="task-date" required />
+        </label>
+        <label>
+          Category <!-- personalise: change categories or remove -->
+          <select id="task-category">
+            <option value="">None</option>
+            <option value="Study">Study</option>
+            <option value="Personal">Personal</option>
+            <option value="Work">Work</option>
+          </select>
+        </label>
+        <label>
+          Notes
+          <textarea id="task-notes" rows="3"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="task-cancel">Cancel</button>
+          <button type="submit" class="btn primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- New Assignment Modal -->
+  <div id="assignment-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>New Assignment</h2>
+      <form id="assignment-form">
+        <label>
+          Title
+          <input type="text" id="assignment-title" required />
+        </label>
+        <label>
+          Module / Course
+          <input type="text" id="assignment-module" />
+        </label>
+        <label>
+          Due date
+          <input type="date" id="assignment-due" required />
+        </label>
+        <label>
+          Notes
+          <textarea id="assignment-notes" rows="3"></textarea>
+        </label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="assignment-create-task" checked />
+          <span>Also create a task on the due date</span>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn" id="assignment-cancel">Cancel</button>
+          <button type="submit" class="btn primary">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
