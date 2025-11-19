@@ -1,4 +1,4 @@
-const CACHE_NAME = "study-planner-cache-v1";
+const CACHE_NAME = "study-planner-cache-v2";
 
 // If you deploy to a subfolder (e.g. GitHub Pages /your-repo/),
 // you may need to adjust these paths.
