@@ -1,13 +1,13 @@
 /* ========== Personalise these colours & font ========== */
 :root {
-  --primary: #2563eb;      /* buttons, highlights */
+  --primary: #ff88be;      /* buttons, highlights */
   --primary-soft: #e0edff;
   --accent: #f9e1a8;       /* assignment dots in calendar */
-  --bg: #ffcbe1;
-  --card-bg: #ffffff;
+  --bg: #010127;
+  --card-bg: #26282a;
   --border: #dcccec;
-  --text-main: #111827;
-  --text-muted: #6b7280;
+  --text-main: #fec3df;
+  --text-muted: #ffeebb;
   --radius: 8px;
   --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
   --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -321,3 +321,4 @@ h1, h2, h3, h4 {
     justify-content: flex-start;
   }
 }
+
