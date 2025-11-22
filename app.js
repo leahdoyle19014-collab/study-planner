@@ -311,14 +311,19 @@ function hideModal(id) {
 
 function setupEventListeners() {
   // open modals
-  document.getElementById("btn-new-task").addEventListener("click", () => {
-    const dateInput = document.getElementById("task-date");
-    dueInput.value = displayToIso(todayStr);
-    document.getElementById("task-title").value = "";
-    document.getElementById("task-category").value = "";
-    document.getElementById("task-notes").value = "";
-    showModal("task-modal");
-  });
+ // NEW TASK
+document.getElementById("btn-new-task").addEventListener("click", () => {
+  const dateInput = document.getElementById("task-date");
+  // todayStr is DD-MM-YYYY → convert for <input type="date">
+  dateInput.value = displayToIso(todayStr);
+
+  document.getElementById("task-title").value = "";
+  document.getElementById("task-category").value = "";
+  document.getElementById("task-notes").value = "";
+
+  showModal("task-modal");
+});
+
 
   document
   .getElementById("btn-new-assignment")
@@ -469,5 +474,6 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
