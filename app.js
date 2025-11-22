@@ -11,11 +11,9 @@ const STORAGE_KEYS = {
 let tasks = [];
 let assignments = [];
 
-const todayDate = new Date();
-const todayStr = toDateStr(todayDate);
-
 // ====== Helpers ======
 
+// Make a date string like "DD-MM-YYYY"
 function toDateStr(d) {
   const day = String(d.getDate()).padStart(2, "0");
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -23,23 +21,28 @@ function toDateStr(d) {
   return `${day}-${month}-${year}`;
 }
 
-
+// Parse "DD-MM-YYYY" → Date object
 function parseStoredDate(str) {
   const [d, m, y] = str.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
+
 // ISO (YYYY-MM-DD) → display (DD-MM-YYYY)
 function isoToDisplay(isoStr) {
+  if (!isoStr) return "";
   const [y, m, d] = isoStr.split("-").map(Number);
-  return `${String(d).padStart(2,"0")}-${String(m).padStart(2,"0")}-${y}`;
+  return `${String(d).padStart(2, "0")}-${String(m).padStart(2, "0")}-${y}`;
 }
 
 // display (DD-MM-YYYY) → ISO (YYYY-MM-DD)
 function displayToIso(displayStr) {
+  if (!displayStr) return "";
   const [d, m, y] = displayStr.split("-").map(Number);
-  return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  return `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
+const todayDate = new Date();
+const todayStr = toDateStr(todayDate);
 
 function save() {
   localStorage.setItem(STORAGE_KEYS.tasks, JSON.stringify(tasks));
@@ -48,16 +51,18 @@ function save() {
 
 function load() {
   tasks = JSON.parse(localStorage.getItem(STORAGE_KEYS.tasks) || "[]");
-  assignments = JSON.parse(localStorage.getItem(STORAGE_KEYS.assignments) || "[]");
+  assignments = JSON.parse(
+    localStorage.getItem(STORAGE_KEYS.assignments) || "[]"
+  );
 }
 
 function getReminderDates(dueDateStr) {
-  const due = parseStoredDate(dueDateStr);
+  const due = parseStoredDate(dueDateStr); // DD-MM-YYYY
   const res = [];
   for (const n of REMINDER_DAYS) {
     const d = new Date(due);
     d.setDate(d.getDate() - n);
-    res.push(toDateStr(d));
+    res.push(toDateStr(d)); // also DD-MM-YYYY
   }
   return res;
 }
@@ -81,7 +86,8 @@ function getTodayReminders() {
 // ====== Rendering: Today pane ======
 
 function renderToday() {
-  document.getElementById("today-label").textContent = new Date().toDateString();
+  document.getElementById("today-label").textContent =
+    new Date().toDateString();
 
   renderTodayTasks();
   renderTodayReminders();
@@ -121,10 +127,12 @@ function renderTodayTasks() {
     const metaSpan = document.createElement("span");
     metaSpan.style.fontSize = "0.75rem";
     metaSpan.style.color = "var(--text-muted)";
-    let metaText = [];
+    const metaText = [];
     if (task.category) metaText.push(task.category);
     if (task.notes) metaText.push("notes");
-    metaSpan.textContent = metaText.length ? `(${metaText.join(" • ")})` : "";
+    metaSpan.textContent = metaText.length
+      ? `(${metaText.join(" • ")})`
+      : "";
 
     row.appendChild(checkbox);
     row.appendChild(titleSpan);
@@ -154,7 +162,9 @@ function renderTodayReminders() {
     const modulePart = r.assignment.module
       ? ` [${r.assignment.module}]`
       : "";
-    div.textContent = `${r.assignment.title}${modulePart} is due in ${r.daysBefore} day(s) on ${r.assignment.dueDate}`;
+    div.textContent = `${r.assignment.title}${modulePart} is due in ${
+      r.daysBefore
+    } day(s) on ${r.assignment.dueDate}`;
     container.appendChild(div);
   });
 }
@@ -223,7 +233,9 @@ function renderCalendarForMonth(date) {
     counters.className = "counters";
 
     const taskCount = tasks.filter((t) => t.date === dateStr).length;
-    const assnCount = assignments.filter((a) => a.dueDate === dateStr).length;
+    const assnCount = assignments.filter(
+      (a) => a.dueDate === dateStr
+    ).length;
 
     if (taskCount > 0) {
       const tDot = document.createElement("span");
@@ -260,7 +272,8 @@ function renderSelectedDay(dateStr) {
   const heading = document.createElement("div");
   heading.style.fontWeight = "600";
   heading.style.marginBottom = "0.25rem";
-  heading.textContent = dateStr === todayStr ? `${dateStr} (Today)` : dateStr;
+  heading.textContent =
+    dateStr === todayStr ? `${dateStr} (Today)` : dateStr;
   container.appendChild(heading);
 
   const dayTasks = tasks.filter((t) => t.date === dateStr);
@@ -321,36 +334,33 @@ function hideModal(id) {
 // ====== Event wiring ======
 
 function setupEventListeners() {
-  // open modals
- // NEW TASK
-document.getElementById("btn-new-task").addEventListener("click", () => {
-  const dateInput = document.getElementById("task-date");
-  dateInput.value = displayToIso(todayStr);
-
-  document.getElementById("task-title").value = "";
-  document.getElementById("task-category").value = "";
-  document.getElementById("task-notes").value = "";
-
-  showModal("task-modal");
-});
-
-
-
+  // NEW TASK
   document
-  .getElementById("btn-new-assignment")
-  .addEventListener("click", () => {
-    // Get the <input type="date"> element for the assignment due date
-    const dueInput = document.getElementById("assignment-due");
-    dueInput.value = displayToIso(todayStr);
+    .getElementById("btn-new-task")
+    .addEventListener("click", () => {
+      const dateInput = document.getElementById("task-date");
+      dateInput.value = displayToIso(todayStr); // DD-MM-YYYY → ISO
 
+      document.getElementById("task-title").value = "";
+      document.getElementById("task-category").value = "";
+      document.getElementById("task-notes").value = "";
 
-    document.getElementById("assignment-title").value = "";
-    document.getElementById("assignment-module").value = "";
-    document.getElementById("assignment-notes").value = "";
-    document.getElementById("assignment-create-task").checked = true;
-    showModal("assignment-modal");
-  });
+      showModal("task-modal");
+    });
 
+  // NEW ASSIGNMENT
+  document
+    .getElementById("btn-new-assignment")
+    .addEventListener("click", () => {
+      const dueInput = document.getElementById("assignment-due");
+      dueInput.value = displayToIso(todayStr);
+
+      document.getElementById("assignment-title").value = "";
+      document.getElementById("assignment-module").value = "";
+      document.getElementById("assignment-notes").value = "";
+      document.getElementById("assignment-create-task").checked = true;
+      showModal("assignment-modal");
+    });
 
   // cancel buttons
   document.getElementById("task-cancel").addEventListener("click", () => {
@@ -370,45 +380,55 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
   });
 
   // Task form submit
-  document.getElementById("task-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const title = document.getElementById("task-title").value.trim();
-  const iso = document.getElementById("task-date").value;
-  const date = isoToDisplay(iso);
-  const category = document.getElementById("task-category").value;
-  const notes = document.getElementById("task-notes").value.trim();
+  document
+    .getElementById("task-form")
+    .addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = document
+        .getElementById("task-title")
+        .value.trim();
+      const iso = document.getElementById("task-date").value;
+      const date = isoToDisplay(iso); // store DD-MM-YYYY
+      const category = document.getElementById("task-category").value;
+      const notes = document
+        .getElementById("task-notes")
+        .value.trim();
 
-  if (!title || !date) return;
+      if (!title || !date) return;
 
-  tasks.push({
-    id: "task_" + Date.now(),
-    title,
-    date,
-    done: false,
-    category,
-    notes,
-  });
+      tasks.push({
+        id: "task_" + Date.now(),
+        title,
+        date,
+        done: false,
+        category,
+        notes,
+      });
 
-  save();
-  hideModal("task-modal");
-  renderToday();
-  const monthDate = parseStoredDate(date);
-  setMonthPicker(monthDate);
-  renderCalendarForMonth(monthDate);
-});
-
-  
+      save();
+      hideModal("task-modal");
+      renderToday();
+      const monthDate = parseStoredDate(date);
+      setMonthPicker(monthDate);
+      renderCalendarForMonth(monthDate);
+    });
 
   // Assignment form submit
   document
     .getElementById("assignment-form")
     .addEventListener("submit", (e) => {
       e.preventDefault();
-      const title = document.getElementById("assignment-title").value.trim();
-      const module = document.getElementById("assignment-module").value.trim();
+      const title = document
+        .getElementById("assignment-title")
+        .value.trim();
+      const module = document
+        .getElementById("assignment-module")
+        .value.trim();
       const iso = document.getElementById("assignment-due").value;
-      const dueDate = isoToDisplay(iso);
-      const notes = document.getElementById("assignment-notes").value.trim();
+      const dueDate = isoToDisplay(iso); // store DD-MM-YYYY
+      const notes = document
+        .getElementById("assignment-notes")
+        .value.trim();
       const createTask = document.getElementById(
         "assignment-create-task"
       ).checked;
@@ -454,23 +474,13 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
   });
 }
 
+// Set the <input type="month"> to match a Date()
 function setMonthPicker(date) {
   const monthPicker = document.getElementById("month-picker");
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
   monthPicker.value = `${y}-${m}`;
 }
-
-// ====== Service Worker Registration ======
-
-// if ("serviceWorker" in navigator) {
-//   window.addEventListener("load", () => {
-//     navigator.serviceWorker
-//       .register("service-worker.js")
-//       .catch((err) => console.error("SW registration failed", err));
-//   });
-// }
-
 
 // ====== Init ======
 
@@ -488,8 +498,3 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
-
-
-
-
