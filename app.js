@@ -314,7 +314,6 @@ function setupEventListeners() {
  // NEW TASK
 document.getElementById("btn-new-task").addEventListener("click", () => {
   const dateInput = document.getElementById("task-date");
-  // todayStr is DD-MM-YYYY → convert for <input type="date">
   dateInput.value = displayToIso(todayStr);
 
   document.getElementById("task-title").value = "";
@@ -323,6 +322,7 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
 
   showModal("task-modal");
 });
+
 
 
   document
@@ -474,6 +474,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
