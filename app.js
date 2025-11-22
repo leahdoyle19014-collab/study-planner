@@ -4,8 +4,8 @@
 const REMINDER_DAYS = [7, 4];
 
 const STORAGE_KEYS = {
-  tasks: "sp_tasks",
-  assignments: "sp_assignments",
+  tasks: "sp_tasks_ddmmyyyy_v1",
+  assignments: "sp_assignments_ddmmyyyy_v1",
 };
 
 let tasks = [];
@@ -313,7 +313,7 @@ function setupEventListeners() {
   // open modals
   document.getElementById("btn-new-task").addEventListener("click", () => {
     const dateInput = document.getElementById("task-date");
-    dateInput.value = todayStr;
+    dueInput.value = displayToIso(todayStr);
     document.getElementById("task-title").value = "";
     document.getElementById("task-category").value = "";
     document.getElementById("task-notes").value = "";
@@ -439,13 +439,14 @@ function setMonthPicker(date) {
 
 // ====== Service Worker Registration ======
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("service-worker.js")
-      .catch((err) => console.error("SW registration failed", err));
-  });
-}
+// if ("serviceWorker" in navigator) {
+//   window.addEventListener("load", () => {
+//     navigator.serviceWorker
+//       .register("service-worker.js")
+//       .catch((err) => console.error("SW registration failed", err));
+//   });
+// }
+
 
 // ====== Init ======
 
@@ -463,3 +464,4 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
