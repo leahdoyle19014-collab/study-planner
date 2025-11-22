@@ -321,16 +321,21 @@ function setupEventListeners() {
   });
 
   document
-    .getElementById("btn-new-assignment")
-    .addEventListener("click", () => {
-      const dueInput = document.getElementById("assignment-due");
-      dueInput.value = todayStr;
-      document.getElementById("assignment-title").value = "";
-      document.getElementById("assignment-module").value = "";
-      document.getElementById("assignment-notes").value = "";
-      document.getElementById("assignment-create-task").checked = true;
-      showModal("assignment-modal");
-    });
+  .getElementById("btn-new-assignment")
+  .addEventListener("click", () => {
+    // Get the <input type="date"> element for the assignment due date
+    const dueInput = document.getElementById("assignment-due");
+
+    // todayStr is "DD-MM-YYYY", so convert it for the date input ("YYYY-MM-DD")
+    dueInput.value = displayToIso(todayStr);
+
+    document.getElementById("assignment-title").value = "";
+    document.getElementById("assignment-module").value = "";
+    document.getElementById("assignment-notes").value = "";
+    document.getElementById("assignment-create-task").checked = true;
+    showModal("assignment-modal");
+  });
+
 
   // cancel buttons
   document.getElementById("task-cancel").addEventListener("click", () => {
@@ -464,4 +469,5 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
