@@ -25,10 +25,21 @@ function toDateStr(d) {
 
 
 function parseStoredDate(str) {
-  // str like '2025-11-19'
-  const [y, m, d] = str.split("-").map(Number);
+  const [d, m, y] = str.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
+// ISO (YYYY-MM-DD) → display (DD-MM-YYYY)
+function isoToDisplay(isoStr) {
+  const [y, m, d] = isoStr.split("-").map(Number);
+  return `${String(d).padStart(2,"0")}-${String(m).padStart(2,"0")}-${y}`;
+}
+
+// display (DD-MM-YYYY) → ISO (YYYY-MM-DD)
+function displayToIso(displayStr) {
+  const [d, m, y] = displayStr.split("-").map(Number);
+  return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+}
+
 
 function save() {
   localStorage.setItem(STORAGE_KEYS.tasks, JSON.stringify(tasks));
@@ -330,9 +341,8 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
   .addEventListener("click", () => {
     // Get the <input type="date"> element for the assignment due date
     const dueInput = document.getElementById("assignment-due");
-
-    // todayStr is "DD-MM-YYYY", so convert it for the date input ("YYYY-MM-DD")
     dueInput.value = displayToIso(todayStr);
+
 
     document.getElementById("assignment-title").value = "";
     document.getElementById("assignment-module").value = "";
@@ -361,30 +371,33 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
 
   // Task form submit
   document.getElementById("task-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const title = document.getElementById("task-title").value.trim();
-    const date = document.getElementById("task-date").value;
-    const category = document.getElementById("task-category").value;
-    const notes = document.getElementById("task-notes").value.trim();
+  e.preventDefault();
+  const title = document.getElementById("task-title").value.trim();
+  const iso = document.getElementById("task-date").value;
+  const date = isoToDisplay(iso);
+  const category = document.getElementById("task-category").value;
+  const notes = document.getElementById("task-notes").value.trim();
 
-    if (!title || !date) return;
+  if (!title || !date) return;
 
-    tasks.push({
-      id: "task_" + Date.now(),
-      title,
-      date,
-      done: false,
-      category,
-      notes,
-    });
-
-    save();
-    hideModal("task-modal");
-    renderToday();
-    const monthDate = parseStoredDate(date);
-    setMonthPicker(monthDate);
-    renderCalendarForMonth(monthDate);
+  tasks.push({
+    id: "task_" + Date.now(),
+    title,
+    date,
+    done: false,
+    category,
+    notes,
   });
+
+  save();
+  hideModal("task-modal");
+  renderToday();
+  const monthDate = parseStoredDate(date);
+  setMonthPicker(monthDate);
+  renderCalendarForMonth(monthDate);
+});
+
+  
 
   // Assignment form submit
   document
@@ -393,7 +406,8 @@ document.getElementById("btn-new-task").addEventListener("click", () => {
       e.preventDefault();
       const title = document.getElementById("assignment-title").value.trim();
       const module = document.getElementById("assignment-module").value.trim();
-      const dueDate = document.getElementById("assignment-due").value;
+      const iso = document.getElementById("assignment-due").value;
+      const dueDate = isoToDisplay(iso);
       const notes = document.getElementById("assignment-notes").value.trim();
       const createTask = document.getElementById(
         "assignment-create-task"
@@ -474,6 +488,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
