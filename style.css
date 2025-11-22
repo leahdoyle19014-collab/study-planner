@@ -3,7 +3,7 @@
   --primary: #ff88be;      /* buttons, highlights */
   --primary-soft: #e0edff;
   --accent: #f9e1a8;       /* assignment dots in calendar */
-  --bg: #282828;
+  --bg: #1c1b22;
   --card-bg: #26282a;
   --border: #dcccec;
   --text-main: #fec3df;
@@ -321,5 +321,6 @@ h1, h2, h3, h4 {
     justify-content: flex-start;
   }
 }
+
 
 
